@@ -1,0 +1,159 @@
+{% extends "network/layout.html" %}
+
+
+{% block body %}
+<link rel="stylesheet" href="styles.css">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+<div class="container col-lg-12">
+    <h1>
+      <a href="{% url 'reddit:post' post.id %}">
+        {{ post.title }}
+      </a>
+    </h1>
+    <p>{{ post.post1 }}</p>
+    <ul class="list-inline text-center d-flex justify-content-left align-items-center">
+      <li class="list-inline-item">
+        <span>
+            <form method="post"  action="{% url 'reddit:voting' post.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" name="upvote" class="btn btn-outline-secondary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"></path>
+                  </svg>
+                </button>
+            </form>
+        </span>
+      </li>
+      <li class="list-inline-item">
+        <span class="page-item">
+          {{ post.vote_score }}
+        </span>
+      </li>
+      <li class="list-inline-item"></li>
+      <span>
+        <form method="post" action="{% url 'reddit:voting' post.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" name="downvote" class="btn btn-outline-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"></path>
+                </svg>
+            </button>
+          </form>
+      </span>
+    </li>
+  </ul>
+
+<span class="label label-warning"><a href="{% url 'reddit:profile' post.userid_id %}" >{{ post.username }}</a></span>
+<div class="pull-right"><span class="label label-default">{{ post.date }}</span>
+    {% if usercu == post.userid_id %}
+    <form action="{% url 'reddit:edit' post.id %}" method="post">
+      {% csrf_token %}
+      <button class="label label-danger" type="submit" value="{{ post.id }}">Edit</button>
+  </form>
+     {% endif %}
+    </div>
+    <hr>
+<div>
+    {% if user.is_authenticated %}
+  <div>
+  <button data-toggle="collapse" href="#collapse0" class="label label-primary" type="submit">Add a comment</button>
+    <div id="collapse0" class="panel-collapse collapse">
+      <div class="panel-body">
+        <form action="{% url 'reddit:comment' post.id %}" method="post">
+          {% csrf_token %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-4">
+                        {{ commentform }}
+                    </div>
+                        <input type="hidden" name="nesto" placeholder="Enter your reply here">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% else %}
+    <h6>Please login to post a comment</h6>
+{% endif %}
+</div>
+<h3>Comments:</h3>
+<br>
+{% for comment in comments %}
+    <hr class="dash">
+    {{comment.comment}}
+    <span class="label label-warning pull-right"><a href="{% url 'reddit:profile' post.userid_id %}" >{{ comment.user }}</a>  - {{ comment.timestamp }}</span>
+    {% if user.is_authenticated %}
+      <button data-toggle="collapse" href="#collapse{{ comment.Iid }}" class="replay label label-primary" type="submit">Reply</button>
+        <div id="collapse{{ comment.Iid }}" class="panel-collapse collapse">
+          <div class="panel-body">
+            <form action="{% url 'reddit:comment' post.id %}" method="post">
+              {% csrf_token %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-4">
+                          {{commentform}}
+                          <input type="hidden" name="Parent" value="{{ comment.Iid}}">
+                        </div>
+                            <input type="hidden" name="nesto" placeholder="Enter your reply here">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <hr>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+    {% for key, value in replies.items %}
+      {% if key == comment.Iid %}
+        {% for rep in value %}
+        <div style="margin-left: 50px">
+          <hr>
+              {{ rep.comment }}
+              <span class="label label-warning "><a href="{% url 'reddit:profile' post.userid_id %}" >{{ rep.user }}</a>  - {{ rep.timestamp }}</span>
+              <button data-toggle="collapse" href="#collapse{{ rep.Iid }}" class="replay label label-primary" type="submit">Reply</button>
+        <div id="collapse{{ rep.Iid }}" class="panel-collapse collapse">
+          <div class="panel-body">
+            <form action="{% url 'reddit:comment' post.id %}" method="post">
+              {% csrf_token %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-4">
+                          {{commentform}}
+                          <input type="hidden" name="Parent" value="{{ rep.Iid}}">
+                        </div>
+                            <input type="hidden" name="nesto" placeholder="Enter your reply here">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <hr>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% for key, value in replies.items %}
+      {% if key == rep.Iid %}
+        {% for rep in value %}
+        <div style="margin-left: 50px">
+          <hr>
+              {{ rep.comment }}
+              <span class="label label-warning "><a href="{% url 'reddit:profile' post.userid_id %}" >{{ rep.user }}</a>  - {{ rep.timestamp }}</span>
+      </div>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+{% endfor %}
+</div>
+</div>
+{% endblock %}

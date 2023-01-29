@@ -1,0 +1,40 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+{% if user.is_authenticated %}
+
+
+  {% for post in page_obj %}
+  <main role="main" class="list-group">
+    <div class="list-group-item list-group-item-action list-group-item-secondary">
+      <h6>
+        <a href="{{ post.userid_id }}" >{{ post.username }}</a></h6>
+      <p class="lead">{{ post.post1 }}</p>
+      <a  href="../../components/navbar/" role="button">Like</a>
+      {% if usercu == post.userid_id %}
+      <form action="edit/{{ post.id }}" method="post" >
+        <button type="submit" class="btn btn-primary" value="{{ post.id }}">Edit</button>
+      </form>
+      {% endif %}
+    </div>
+  </main>
+  {% endfor %}
+  {% endif %}
+  <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

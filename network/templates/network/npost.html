@@ -1,0 +1,19 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<ul class="list-group">
+    <li class="list-group-item">
+        <form method="POST">
+            {% csrf_token %}
+            {{ post1 }}
+            <input type="submit" class="float-right" name="dugme" value="Send post">
+
+        </form>
+    </li>
+</ul>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}BREddit{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{% url 'reddit:index' %}">BREddit</a>
+
+            <div class="mx-auto order-0">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'reddit:index' %}">All</a>
+                  </li>
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                </li>
+
+                <li class="nav-item">
+
+                        <a class="nav-link" href="{% url 'reddit:following' %}">Front page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reddit:npost' %}">New post</a>
+                    </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reddit:logout' %}">Log Out</a>
+                    </li>
+                    <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'reddit:search' %}">
+                        <input class="form-control mr-sm-2 align-right justify-content-right" type="search" name="q" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0 justify-content-" type="submit">Search</button>
+                      </form>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reddit:login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reddit:register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+          </nav>
+
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

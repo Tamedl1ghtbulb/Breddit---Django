@@ -1,0 +1,91 @@
+{% extends "network/layout.html" %}
+
+
+{% block body %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+
+<form action="{% url 'reddit:index' %}" method="POST">
+    <button name="new" class="btn btn-light" value="new">new</button>
+    <button class="btn btn-light" name="top" value="top">top</button>
+    <button class="btn btn-light" name="old" value="old">old</button>
+</form>
+
+  {% for post in page_obj %}
+<div class="container col-md-12">
+   <h1>
+        <a href="{% url 'reddit:post' post.id %}"> {{ post.title }}</a>
+   </h1>
+    <p>{{ post.post1 }}</p>
+<ul class="list-inline text-center d-flex justify-content-left align-items-center">
+    <li class="list-inline-item">
+        <span>
+            <form method="post"  action="{% url 'reddit:voting' post.id %}">
+                <button type="submit" name="upvote" class="btn btn-outline-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"></path>
+                    </svg>
+                </button>
+            </form>
+        </span>
+    </li>
+    <li class="list-inline-item">
+        <span class="page-item">
+            {{ post.vote_score }}
+        </span>
+    </li>
+        <li class="list-inline-item"></li>
+    <span>
+        <form method="post" action="{% url 'reddit:voting' post.id %}">
+            <button type="submit" name="downvote" class="btn btn-outline-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"></path>
+                </svg>
+            </button>
+        </form>
+    </span>
+</ul>
+<span class="label label-warning">
+    <a href="{% url 'reddit:profile' post.userid_id %}">
+        {{ post.username }}
+    </a>
+</span>
+    <div class="pull-right">
+        <span class="label label-default">
+            {{ post.date }}
+        </span>
+        {% if usercu == post.userid_id %}
+        <form action="{% url 'reddit:edit' post.id %}" method="post">
+            <button class="label label-danger" type="submit" value="{{ post.id }}">
+                Edit
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    <hr>
+</div>
+
+{% endfor %}
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

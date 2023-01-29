@@ -1,0 +1,33 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+{% if user.is_authenticated %}
+
+{% for post in posts %}
+  <div class="container">
+    <div class="col-md-12">
+      <h1>
+        <a href="{% url 'reddit:post' post.id %}"> {{ post.title }}</a>
+      </h1>
+        <p>{{ post.post1 }}</p>
+        <div>
+          <span class="label label-warning"><a href="{{ post.userid_id }}" >{{ post.username }}</a></span>
+            <div class="pull-right"><span class="label label-default">{{ post.date }}</span>
+                {% if usercu == post.userid_id %}
+                <form action="edit/{{ post.id }}" method="post">
+                  {% csrf_token %}
+                  <button class="label label-danger" type="submit" value="{{ post.id }}">Edit</button>
+                </form>
+                {% endif %}
+            </div>
+          <hr>
+        </div>
+    </div>
+  </div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

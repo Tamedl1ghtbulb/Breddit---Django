@@ -1,0 +1,20 @@
+{% extends "network/layout.html" %}
+
+
+{% block body %}
+
+{% if user.is_authenticated %}
+<ul class="list-group">
+  <li class="list-group-item">
+    <form method="POST" >
+      {% csrf_token %}
+        <textarea name="titl" class="text-center form-control" placeholder="{{ post1.title }}"> {{ post1.title }}</textarea>
+        <textarea id="edit" name="edit" class="form-control text-center"  rows="6" placeholder="{{ post1.post1 }}"> {{ post1.post1 }} </textarea>
+        <button type="submit" name="subedit">Submit</button>
+    </form>
+  </li>
+</ul>
+
+{% endif %}
+
+{% endblock %}
