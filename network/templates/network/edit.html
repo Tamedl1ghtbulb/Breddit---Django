@@ -8,9 +8,8 @@
   <li class="list-group-item">
     <form method="POST" >
       {% csrf_token %}
-        <textarea name="titl" class="text-center form-control" placeholder="{{ post1.title }}"> {{ post1.title }}</textarea>
-        <textarea id="edit" name="edit" class="form-control text-center"  rows="6" placeholder="{{ post1.post1 }}"> {{ post1.post1 }} </textarea>
-        <button type="submit" name="subedit">Submit</button>
+      {{ post11 }}
+      <input type="submit" class="float-right" name="dugme" value="Send post">
     </form>
   </li>
 </ul>

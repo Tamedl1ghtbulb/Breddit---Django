@@ -106,7 +106,7 @@ def profile(request, korisnikp_id):
     # Logic for following a user
     if request.method == "POST" and request.POST.get("dugmeu") == "Follow / Unfollow":
         user = User.objects.get(username=request.user)
-        if not user.pratioci.filter(kogaprate= korisnikp_id) and user.pratioci.filter(kogaprate= korisnikp_id) != request.user.id : #provera da li ulogovani user vec prati datog usera na cijem je profilu i uslov da ne bi mogao da yaprati sam sebe
+        if not user.pratioci.filter(kogaprate= korisnikp_id) and user.pratioci.filter(kogaprate= korisnikp_id) != request.user.id : #check to see if the logged in user is already following this user and prevention that he can't follow himself.
             fol = Follow4Follow()
             fol.pratioci = User.objects.get(username=request.user)
             fol.kogaprate = User.objects.get(id= korisnikp_id)
@@ -114,7 +114,7 @@ def profile(request, korisnikp_id):
         else:
             user.pratioci.filter(kogaprate= korisnikp_id).delete()
 
-    # Profil of the user with his subbmited posts via GET method
+    # Profile of the users profile with his subbmited posts via GET method
     usercu = request.user.id
     postoviusera = Postovi.objects.filter(userid_id = korisnikp_id).order_by("-id")
     usercr = korisnikp_id
@@ -173,8 +173,11 @@ def edit(request,pid):
             return HttpResponseRedirect(reverse("reddit:index"))
         else:
             post1 = Postovi.objects.get(id=pid)
+            
+            post11 = Newpost1(instance=post1)
             return render(request, "network/edit.html",{
                 "post1" : post1,
+                "post11" : post11
 
             })
     else:
@@ -184,11 +187,11 @@ def edit(request,pid):
 @login_required(login_url='/login')
 def npost(request):
     if request.method == "POST" and request.POST.get("dugme") == "Send post":
-            post = Newpost1(request.POST)
-            if post.is_valid():
-                new_post = Postovi(likes = 0,username = request.user, userid = User.objects.get(username=request.user),title =post.cleaned_data["title"], post1 =post.cleaned_data["post1"], date=datetime.datetime.now(),)
-                new_post.save()
-            return HttpResponseRedirect(reverse("reddit:index"))
+        post = Newpost1(request.POST)
+        if post.is_valid():
+            new_post = Postovi(likes = 0,username = request.user, userid = User.objects.get(username=request.user),title =post.cleaned_data["title"], post1 =post.cleaned_data["post1"], date=datetime.datetime.now(),)
+            new_post.save()
+        return HttpResponseRedirect(reverse("reddit:index"))
     else:
         post1 = Newpost1()
         return render(request, "network/npost.html", {

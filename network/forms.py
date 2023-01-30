@@ -22,7 +22,6 @@ class CommentForm(ModelForm):
         model = Komentar
         fields = ['comment']
         widgets = {
-           # 'parent' :forms.NumberInput(attrs={'type':'hidden', 'value': '{{ comment.Iid}}'}),
             'comment':forms.TextInput(attrs={'class': 'form-control', 'placeholder':"Enter your comment here",}),
         }
         labels = {
