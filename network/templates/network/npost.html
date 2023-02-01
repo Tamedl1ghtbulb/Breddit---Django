@@ -1,16 +1,19 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-
+{% load crispy_forms_tags %}
 {% if user.is_authenticated %}
 
 <ul class="list-group">
     <li class="list-group-item">
         <form method="POST">
-            {% csrf_token %}
-            {{ post1 }}
-            <input type="submit" class="float-right" name="dugme" value="Send post">
-
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    {% csrf_token %}
+                    {{ post1|crispy }}
+                    <input type="submit" class="float-right btn btn-primary" name="dugme" value="Send post">
+                </div>
+            </div>
         </form>
     </li>
 </ul>

@@ -2,6 +2,7 @@
 
 
 {% block body %}
+{% load crispy_forms_tags %}
 <link rel="stylesheet" href="styles.css">
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -71,7 +72,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-4">
-                        {{ commentform }}
+                        {{ commentform|crispy }}
                     </div>
                         <input type="hidden" name="nesto" placeholder="Enter your reply here">
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -100,7 +101,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-4">
-                          {{commentform}}
+                          {{commentform|crispy}}
                           <input type="hidden" name="Parent" value="{{ comment.Iid}}">
                         </div>
                             <input type="hidden" name="nesto" placeholder="Enter your reply here">
@@ -127,7 +128,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-4">
-                          {{commentform}}
+                          {{ commentform|crispy }}
                           <input type="hidden" name="Parent" value="{{ rep.Iid}}">
                         </div>
                             <input type="hidden" name="nesto" placeholder="Enter your reply here">
